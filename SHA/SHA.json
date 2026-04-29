@@ -1,5 +1,5 @@
 {
-    "schema_version": "1",
+    "schema_version": 1,
     "versions": [
         {
             "version": "1.0.0",
@@ -7,7 +7,7 @@
             "date": "2026-04-29",
             "game_version": ">=1.0.0",
             "sha256": "91aca774ac3c0a872d8afc6a28aa40de551d2f2d7bd83e7fb799a7d1ca12e0b3",
-            "download": "PLACEHOLDER"
+            "download": "https://github.com/Kronifer/sb-chinese-maps/releases/download/v1.1.0/SHA.zip"
         }
     ]
 }
