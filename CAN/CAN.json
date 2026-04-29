@@ -1,0 +1,13 @@
+{
+    "schema_version": "1",
+    "versions": [
+        {
+           "version": "1.0.0",
+           "date": "2026-04-25",
+           "game_version": ">=1.0.0",
+           "changelog": "Initial release",
+           "download": "https://github.com/Kronifer/sb-chinese-maps/releases/download/v1.0.0/CAN.zip",
+           "sha256": "f39ddb3670ef7804cba0039357f495099fe0cc55b9d34b09db4a9c4e166106f9"
+        }
+    ]
+}
