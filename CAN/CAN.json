@@ -2,6 +2,14 @@
     "schema_version": 1,
     "versions": [
         {
+            "version": "1.1.0",
+            "date": "2026-05-08",
+            "game_version": ">=1.0.0",
+            "changelog": "Map now includes data for the city of Foshan.",
+            "sha256": "9792085ebecb1d2b66e9879ebc485a0cc5763e3c033c5025a05565d7fe3fc3a0",
+            "download": "https://github.com/Kronifer/sb-chinese-maps/releases/download/v1.2.0/CAN.zip"
+        },
+        {
            "version": "1.0.0",
            "date": "2026-04-25",
            "game_version": ">=1.0.0",
