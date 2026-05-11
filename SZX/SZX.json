@@ -1,0 +1,13 @@
+{
+    "schema_version": 1,
+    "versions": [
+        {
+            "version": "1.0.0",
+            "changelog": "Initial release",
+            "date": "2026-05-11",
+            "game_version": ">=1.0.0",
+            "sha256": "88fd3cea5d484e3767076a8e7e6923a4e0d1824ce50af81afcfe54ba19c4cf39",
+            "download": "https://github.com/Kronifer/sb-chinese-maps/releases/download/v1.3.0/SZX.zip"
+        }
+    ]
+}
