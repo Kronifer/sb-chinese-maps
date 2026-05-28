@@ -1,0 +1,13 @@
+{
+    "schema_version": 1,
+    "versions": [
+        {
+            "version": "1.0.0",
+            "changelog": "Initial release",
+            "date": "2026-05-28",
+            "game_version": ">=1.0.0",
+            "sha256": "580959a3b7f38a874b07e82b75fa6b42fe60d73b201a68c435a71124a36b0cfe",
+            "download": "https://github.com/Kronifer/sb-chinese-maps/releases/download/v1.4.0/PEK.zip"
+        }
+    ]
+}
