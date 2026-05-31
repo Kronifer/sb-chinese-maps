@@ -76,18 +76,19 @@ const USE_OSRM = true;
 
 // Constants for more realistic commute patterns
 const SURPRISE_LONG_COMMUTE_RATE = 0.01; // 5% chance of surprise long commute
-const GRAVITY_WEIGHT = 0.7; // Weight for gravity component
-const RANDOM_WEIGHT = 0.3; // Weight for random component
+const GRAVITY_WEIGHT = 0.8; // Weight for gravity component
+const RANDOM_WEIGHT = 0.2; // Weight for random component
 const MIN_PROBABILITY = 0.001; // Minimum probability for any job
 
 let pointsProcessed = 0;
 let popsToProcess = points.length;
 const MEDIAN_COMMUTE_KM = 8;
-const LAMBDA = Math.LN2 / MEDIAN_COMMUTE_KM; // For exponential distribution of commute distances
+const LAMBDA = (2 / MEDIAN_COMMUTE_KM); // For exponential distribution of commute distances
 const assigned = new Map(points.map(p => [p.id, 0]));
+points.sort(() => rng() - 0.5); // Shuffle points to avoid processing in a fixed order
 async function generatePoints() {
     for(const point of points) {
-        let totalCommuteLengths = 0;
+        let commuteLengths = [];
         let totalPops = 0;
         let workersLeft = point.remainingJobs;
         while(workersLeft > MIN_POP_SIZE) {
@@ -108,12 +109,14 @@ async function generatePoints() {
                     let score = 0;
                     
                     const effectiveDistance = point.id.startsWith("AIR_")
-                        ? Math.max(distance * 0.1, 1)
+                        ? Math.max(distance * 0.3, 1)
+                        : point.id.startsWith("UNI_")
+                        ? Math.max(distance * 0.5, 1)
                         : distance;
                     const utilisation = assigned.get(j.id) / j.possibleResidents;
-                    const availabilityPenalty = Math.exp(-utilisation * 3); // softly decays as zone fills
-                    const gravityComponent = Math.sqrt(j.possibleResidents) * Math.exp(-LAMBDA * effectiveDistance) * availabilityPenalty;
-                    const randomComponent = 0.2 + rng() * 0.8;
+                    //const availabilityPenalty = Math.exp(-utilisation * 3); // softly decays as zone fills
+                    const gravityComponent = Math.log(j.possibleResidents) * Math.exp(-LAMBDA * effectiveDistance);
+                    const randomComponent = 0.2 + rng() * 0.8 * Math.exp(-LAMBDA * effectiveDistance);
                     score = GRAVITY_WEIGHT * gravityComponent + RANDOM_WEIGHT * randomComponent;
                     if (rng() < SURPRISE_LONG_COMMUTE_RATE && distance > 2*MEDIAN_COMMUTE_KM) {
                         score += GRAVITY_WEIGHT * gravityComponent * 2;
@@ -172,9 +175,10 @@ async function generatePoints() {
             assigned.set(selected.j.id, assigned.get(selected.j.id) + popSize);
             workersLeft -= popSize;
             totalPops += 1;
-            totalCommuteLengths += drivingMeters;
+            commuteLengths.push(drivingMeters);
         }
-        console.log(`Processed ${++pointsProcessed}/${popsToProcess} points... (${totalPops} pops, average commute ${(totalCommuteLengths / totalPops / 1000).toFixed(2)} km)`);
+        let medianCommute = commuteLengths.sort((a, b) => a - b)[Math.floor(commuteLengths.length / 2)] / 1000;
+        console.log(`Processed ${++pointsProcessed}/${popsToProcess} points... (${totalPops} pops, median commute ${(medianCommute).toFixed(2)} km)`);
     }
 }
 

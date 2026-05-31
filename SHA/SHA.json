@@ -2,6 +2,14 @@
     "schema_version": 1,
     "versions": [
         {
+            "version":  "1.1.0",
+            "date": "2026-05-31",
+            "game_version": ">=1.0.0",
+            "changelog": "Demand data updated to better match the commute characteristics of the city.",
+            "download": "https://github.com/Kronifer/sb-chinese-maps/releases/download/v1.5.0/SHA.zip",
+            "sha256": "02a08f7c46d8df6657a2343f3c34ead196ad8896958e23b4cd551f75406b4777"
+        },
+        {
             "version": "1.0.0",
             "changelog": "Initial release",
             "date": "2026-04-29",

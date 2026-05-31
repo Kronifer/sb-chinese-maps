@@ -2,10 +2,13 @@ import fs from "fs";
 
 const demand = JSON.parse(fs.readFileSync(process.argv[2]));
 
-let pointSizes = demand.points.map(point => point.jobs);
+let pointSizes = demand.points.map(point => point.popIds.length);
 let popSizes = demand.pops.map(pop => pop.size);
 let popDriveDistances = demand.pops.map(pop => pop.drivingDistance);
 let popDriveSeconds = demand.pops.map(pop => pop.drivingSeconds);
+
+console.log("Total points:", pointSizes.length);
+console.log("Total pops:", popSizes.length);
 
 console.log("Mean point size:", pointSizes.reduce((a, b) => a + b, 0) / pointSizes.length);
 console.log("Mean pop size:", popSizes.reduce((a, b) => a + b, 0) / popSizes.length);

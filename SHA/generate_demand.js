@@ -112,37 +112,27 @@ areas.features.forEach((area) => {
 
 let pops = [];
 
-const MIN_POP_SIZE = 20;
+const MIN_POP_SIZE = 1;
 const MAX_POP_SIZE = 200;
 const DRIVING_SPEED_KPH = 30;
 const USE_OSRM = true;
 
 // Constants for more realistic commute patterns
-const STICKY_COMMUTER_RATE = 0.2; // 20% of commuters ignore distance
-const SURPRISE_LONG_COMMUTE_RATE = 0.05; // 5% chance of surprise long commute
-const GRAVITY_WEIGHT = 0.65; // Weight for gravity component
-const RANDOM_WEIGHT = 0.35; // Weight for random component
+const SURPRISE_LONG_COMMUTE_RATE = 0.01; // 5% chance of surprise long commute
+const GRAVITY_WEIGHT = 0.8; // Weight for gravity component
+const RANDOM_WEIGHT = 0.2; // Weight for random component
 const MIN_PROBABILITY = 0.001; // Minimum probability for any job
-
-// Distance decay function based on distance bands
-function getDistanceDecayPower(distance) {
-    if (distance < 15) {
-        return 1.0; // Gentle decay for close distances
-    } else if (distance < 30) {
-        return 1.15;
-    } else if (distance < 45) {
-        return 1.3; // Medium decay for medium distances
-    } else if (distance < 60) {
-        return 1.45;
-    } else {
-        return 1.6; // Steeper decay for long distances
-    }
-}
 
 let pointsProcessed = 0;
 let popsToProcess = points.length;
+const MEDIAN_COMMUTE_KM = 9.5;
+const LAMBDA = (2 / MEDIAN_COMMUTE_KM); // For exponential distribution of commute distances
+const assigned = new Map(points.map(p => [p.id, 0]));
+points.sort(() => rng() - 0.5); // Shuffle points to avoid processing in a fixed order
 async function generatePoints() {
     for(const point of points) {
+        let commuteLengths = [];
+        let totalPops = 0;
         let workersLeft = point.remainingJobs;
         while(workersLeft > MIN_POP_SIZE) {
             let popSize = 0;
@@ -155,31 +145,27 @@ async function generatePoints() {
                 popSize = MIN_POP_SIZE + Math.floor(rng() * (MAX_POP_SIZE - MIN_POP_SIZE));
             }
 
-            const isStickyCommuter = rng() < STICKY_COMMUTER_RATE;
-
             const jobOptions = points
                 .filter((j) => j.id !== point.id && j.possibleResidents > popSize)
                 .map((j) => {
                     const distance = turf.distance(turf.point(point.location), turf.point(j.location), { units: "kilometers" });
-
                     let score = 0;
-                    if (isStickyCommuter) {
-                        score = 1;
-                    } else {
-                        const effectiveDistance = point.id.startsWith("AIR_")
-                            ? Math.max(distance * 0.3, 1)
-                            : distance;
-                        const decayPower = getDistanceDecayPower(effectiveDistance);
-                        const gravityComponent = Math.sqrt(j.possibleResidents) / Math.pow(effectiveDistance, decayPower);
-                        const randomComponent = 0.2 + rng() * 2.8;
-                        score = GRAVITY_WEIGHT * gravityComponent + RANDOM_WEIGHT * randomComponent;
-
-                        if (rng() < SURPRISE_LONG_COMMUTE_RATE && distance > 45) {
-                            score *= 10;
-                        }
-
-                        score = Math.max(score, MIN_PROBABILITY);
+                    
+                    const effectiveDistance = point.id.startsWith("AIR_")
+                        ? Math.max(distance * 0.3, 1)
+                        : point.id.startsWith("UNI_")
+                        ? Math.max(distance * 0.5, 1)
+                        : distance;
+                    const utilisation = assigned.get(j.id) / j.possibleResidents;
+                    //const availabilityPenalty = Math.exp(-utilisation * 3); // softly decays as zone fills
+                    const gravityComponent = Math.log(j.possibleResidents) * Math.exp(-LAMBDA * effectiveDistance);
+                    const randomComponent = 0.2 + rng() * 0.8 * Math.exp(-LAMBDA * effectiveDistance);
+                    score = GRAVITY_WEIGHT * gravityComponent + RANDOM_WEIGHT * randomComponent;
+                    if (rng() < SURPRISE_LONG_COMMUTE_RATE && distance > 2*MEDIAN_COMMUTE_KM) {
+                        score += GRAVITY_WEIGHT * gravityComponent * 2;
                     }
+                    score = Math.max(score, MIN_PROBABILITY);
+                    
                     return {j, distance, score};
                 });
             if(jobOptions.length === 0) {
@@ -195,7 +181,7 @@ async function generatePoints() {
 
             if(USE_OSRM) {
                 try {
-                    const resp = await fetch("http://127.0.0.1:5000/route/v1/driving/" + point.location[0] + "," + point.location[1] + ";" + selected.j.location[0] + "," + selected.j.location[1] + "?overview=false");
+                    const resp = await fetch("http://127.0.0.1:8080/route/v1/driving/" + point.location[0] + "," + point.location[1] + ";" + selected.j.location[0] + "," + selected.j.location[1] + "?overview=false");
                     const data = await resp.json();
                     if(data.code === "Ok" && data.routes.length > 0) {
                         drivingMeters = data.routes[0].distance;
@@ -228,11 +214,14 @@ async function generatePoints() {
             pops.push(pop);
             point.popIds.push(pop.id);
             selected.j.popIds.push(pop.id);
-            selected.j.possibleResidents -= popSize;
             selected.j.residents += popSize;
+            assigned.set(selected.j.id, assigned.get(selected.j.id) + popSize);
             workersLeft -= popSize;
+            totalPops += 1;
+            commuteLengths.push(drivingMeters);
         }
-        console.log(`Processed ${++pointsProcessed}/${popsToProcess} points...`);
+        let medianCommute = commuteLengths.sort((a, b) => a - b)[Math.floor(commuteLengths.length / 2)] / 1000;
+        console.log(`Processed ${++pointsProcessed}/${popsToProcess} points... (${totalPops} pops, median commute ${(medianCommute).toFixed(2)} km)`);
     }
 }
 
