@@ -1,0 +1,13 @@
+{
+    "schema_version": 1,
+    "versions": [
+        {
+            "version": "1.0.0",
+            "changelog": "Initial release",
+            "date": "2026-07-01",
+            "game_version": ">=1.3.7",
+            "sha256": "0231fcc183112d74c9408aaa87b02229a4ba6504ff71447e73e1123ebb671b33",
+            "download": "https://github.com/Kronifer/sb-chinese-maps/releases/download/v1.6.0/CKG.zip"
+        }
+    ]
+}

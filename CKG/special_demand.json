@@ -1,0 +1,30 @@
+{
+  "rail_chongqing_north": 92313,
+  "rail_chongqing_west": 62318,
+  "rail_chongqing_east": 6426,
+  "rail_yongchuan_east": 4043,
+
+  "airport_ckg_t2": 17898,
+  "airport_ckg_t3a": 26546,
+  "airport_ckg_t3b": 3592,
+  "airport_wanzhou_wuqiao_terminal": 855,
+  "airport_qianjiang_wulingshan_terminal": 349,
+  "airport_wushan_terminal": 86,
+  "airport_xiannvshan_terminal": 52,
+
+  "uni_chongqing_university": 50000,
+  "uni_southwest_university": 60000,
+  "uni_chongqing_university_of_technology": 31974,
+  "uni_chongqing_technology_and_business_university": 30000,
+  "uni_chongqing_normal_university": 30000,
+  "uni_chongqing_medical_university": 27724,
+  "uni_southwest_university_of_political_science_and_law": 23750,
+  "uni_chongqing_jiaotong_university": 24000,
+  "uni_chongqing_university_of_posts_and_telecommunications": 24000,
+  "uni_chongqing_university_of_science_and_technology": 23000,
+  "uni_chongqing_three_gorges_university": 13000,
+  "uni_chongqing_university_of_arts_and_sciences": 13000,
+  "uni_yangtze_normal_university": 13200,
+  "uni_sichuan_international_studies_university": 12000,
+  "uni_sichuan_fine_arts_institute": 8000
+}
