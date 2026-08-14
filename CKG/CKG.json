@@ -2,6 +2,14 @@
     "schema_version": 1,
     "versions": [
         {
+            "version": "1.2.0",
+            "date": "2026-08-13",
+            "game_version": ">=1.4.0",
+            "changelog": "Updated to include driving paths with Railyard >=0.2.10.",
+            "download": "https://github.com/Kronifer/sb-chinese-maps/releases/download/v1.8.0/CKG.zip",
+            "sha256": "c8e88525d19f511bd984fda2fb415019e3aa568cc8db053a2c596311698e9493"
+        },
+        {
             "version": "1.1.0",
             "date": "2026-07-06",
             "game_version": ">=1.3.7",

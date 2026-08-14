@@ -1,0 +1,13 @@
+{
+    "schema_version": 1,
+    "versions": [
+        {
+            "version": "1.0.0",
+            "date": "2026-08-13",
+            "game_version": ">=1.4.0",
+            "changelog": "Initial release",
+            "download": "https://github.com/Kronifer/sb-chinese-maps/releases/download/v1.8.0/XMN.zip",
+            "sha256": "53ee5ccd7468c2a2b0b339c78b6bda00fa595ff870ebfc12fffea636b6a123d6"
+        }
+    ]
+}

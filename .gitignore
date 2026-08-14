@@ -1,2 +1,4 @@
 node_modules/
 demand_data.json
+filtered_demand_data.json
+driving_paths.json

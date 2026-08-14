@@ -10,6 +10,8 @@ let popDriveSeconds = demand.pops.map(pop => pop.drivingSeconds);
 console.log("Total points:", pointSizes.length);
 console.log("Total pops:", popSizes.length);
 
+console.log("Total population:", popSizes.reduce((a, b) => a + b, 0));
+
 console.log("Mean point size:", pointSizes.reduce((a, b) => a + b, 0) / pointSizes.length);
 console.log("Mean pop size:", popSizes.reduce((a, b) => a + b, 0) / popSizes.length);
 console.log("Mean pop driving distance:", popDriveDistances.reduce((a, b) => a + b, 0) / popDriveDistances.length);
